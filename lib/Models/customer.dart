@@ -1,19 +1,23 @@
-class Customer{
+class Customer {
   String customerName;
   String email;
-  String profileUrl;
+  String? profileUrl; // Optional profileUrl
+  String phoneNo;
 
   Customer({
     required this.customerName,
     required this.email,
-    required this.profileUrl,
+    this.profileUrl, // Optional profileUrl
+    required this.phoneNo, // Added phoneNo field
+
   });
 
   Map<String, dynamic> toMap() {
     return {
       'customerName': customerName,
       'email': email,
-      'profileUrl': profileUrl,
+      'profileUrl': profileUrl, // Can be null
+      'phoneNo': phoneNo, // Added phoneNo field
     };
   }
 
@@ -21,7 +25,8 @@ class Customer{
     return Customer(
       customerName: map['customerName'] ?? '',
       email: map['email'] ?? '',
-      profileUrl: map['profileUrl'] ?? '',
+      profileUrl: map['profileUrl'], // Can be null
+      phoneNo: map['phoneNo'] ?? '', // Added phoneNo field
     );
   }
 }

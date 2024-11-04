@@ -4,11 +4,13 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:image_picker/image_picker.dart';
-
+// import 'package:pet_kart/Firebase/FirebaseFirestore/firestore_firebase.dart';
+// import 'package:pet_kart/Models/customer.dart';
+// import 'package:pet_kart/SControllers/LoginScreenControllers/sign_up_controller_google.dart';
 import '../../Firebase/FirebaseFirestore/firestore_firebase.dart';
 import '../../Firebase/FirebaseStorage/cloud_storage.dart';
-import '../../Scontrollers/LoginScreenControllers/sign_up_controller_google.dart';
 import '../../Models/customer.dart';
+import '../../Scontrollers/LoginScreenControllers/sign_up_controller_google.dart';
 class SingupScreengoogle extends StatelessWidget {
   const SingupScreengoogle({super.key});
 
@@ -29,10 +31,12 @@ class SingupScreengoogle extends StatelessWidget {
             key: controller.formKey1,
             child: ListView(
               children: [
-                _buildProfileImage(context, controller),
-                const Gap(16),
+                // _buildProfileImage(context, controller),
+                // const Gap(16),
                 _buildUsernameField(controller),
-                const Gap(32),
+                const Gap(8),
+                _buildPhoneField(controller),
+                const Gap(20),
                 _buildSignUpButton(controller),
               ],
             ),
@@ -42,35 +46,54 @@ class SingupScreengoogle extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileImage(BuildContext context, SignUpControllerGoogle controller) {
-    return GestureDetector(
-      onTap: () => _showImageSourceActionSheet(context, controller),
-      child: Obx(() => CircleAvatar(
-        radius: 50,
-        backgroundColor: Colors.grey[300],
-        backgroundImage: controller.image.value != null ? FileImage(controller.image.value!) : null,
-        child: controller.image.value == null ? const Icon(Icons.add_a_photo, size: 50) : null,
-      )),
-    );
-  }
+  // Widget _buildProfileImage(BuildContext context, SignUpControllerGoogle controller) {
+  //   return GestureDetector(
+  //     onTap: () => _showImageSourceActionSheet(context, controller),
+  //     child: Obx(() => CircleAvatar(
+  //       radius: 50,
+  //       backgroundColor: Colors.grey[300],
+  //       backgroundImage: controller.image.value != null ? FileImage(controller.image.value!) : null,
+  //       child: controller.image.value == null ? const Icon(Icons.add_a_photo, size: 50) : null,
+  //     )),
+  //   );
+  // }
 
   Widget _buildUsernameField(SignUpControllerGoogle controller) {
+  Color primary=Get.theme.colorScheme.primary;
     return TextFormField(
       controller: controller.nicknameController,
-      decoration: const InputDecoration(labelText: 'Username'),
+
+
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Please enter your nickname';
         }
         return null;
       },
+      decoration: InputDecoration(
+        labelText: 'Username',
+        fillColor: Colors.white,
+        filled: true,
+        border: OutlineInputBorder(
+          borderSide: BorderSide(color: primary),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: primary, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.blue, width: 2),
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
     );
   }
 
   Widget _buildSignUpButton(SignUpControllerGoogle controller) {
     return ElevatedButton(
       onPressed: () async {
-        await _handleSignUp(controller);
+        controller.GoogleSignUp(controller);
       },
       child: const Text('Sign Up'),
     );
@@ -95,6 +118,7 @@ class SingupScreengoogle extends StatelessWidget {
       customerName: controller.nicknameController.text,
       email: controller.email,
       profileUrl: profileUrl,
+      phoneNo: "854964515468"
     );
 
     bool isSuccess = await FirestoreFirebaseAL().uploadUserDataAL(cu);
@@ -108,34 +132,66 @@ class SingupScreengoogle extends StatelessWidget {
   }
 
 
-  void _showImageSourceActionSheet(BuildContext context, SignUpControllerGoogle controller) {
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: const Icon(Icons.photo_library),
-                title: const Text('Gallery'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  controller.pickImage(ImageSource.gallery);
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.photo_camera),
-                title: const Text('Camera'),
-                onTap: () {
-                  Navigator.of(context).pop();
-                  controller.pickImage(ImageSource.camera);
-                },
-              ),
-            ],
+  // void _showImageSourceActionSheet(BuildContext context, SignUpControllerGoogle controller) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return SafeArea(
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             ListTile(
+  //               leading: const Icon(Icons.photo_library),
+  //               title: const Text('Gallery'),
+  //               onTap: () {
+  //                 Navigator.of(context).pop();
+  //                 controller.pickImage(ImageSource.gallery);
+  //               },
+  //             ),
+  //             ListTile(
+  //               leading: const Icon(Icons.photo_camera),
+  //               title: const Text('Camera'),
+  //               onTap: () {
+  //                 Navigator.of(context).pop();
+  //                 controller.pickImage(ImageSource.camera);
+  //               },
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
+
+  _buildPhoneField(SignUpControllerGoogle controller) {
+Color primary=Get.theme.colorScheme.primary;
+      return TextFormField(
+        controller: controller.phoneController,
+
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter your phone number';
+          }
+          return null;
+        },
+        decoration: InputDecoration(
+          labelText: 'Phone number',
+          fillColor: Colors.white,
+          filled: true,
+          border: OutlineInputBorder(
+            borderSide: BorderSide(color: primary),
+            borderRadius: BorderRadius.circular(10),
           ),
-        );
-      },
-    );
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: primary, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      );
+
   }
 }

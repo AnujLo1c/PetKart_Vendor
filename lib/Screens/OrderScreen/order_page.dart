@@ -14,7 +14,6 @@ class OrderPage extends StatelessWidget {
     return Obx(() {
       List<OrderModel> orders;
 
-      // Switch to determine which orders to show
       switch (orderScreenController.selectedTab.value) {
         case 0:
           orders = orderScreenController.totalOrders;
@@ -43,10 +42,11 @@ class OrderPage extends StatelessWidget {
                     child: const Text("Total Orders",style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   if(orderScreenController.selectedTab.value==0)Container(
-                    width: 75,
+                    // margin: EdgeInsets.symmetric(horizontal: 20),
+                    width: 80,
                     height: 3,
                     color: Get.theme.colorScheme.primary,
-                  )
+                  ),
                 ],
               ),
               Column(
@@ -55,11 +55,13 @@ class OrderPage extends StatelessWidget {
                     onPressed: () => orderScreenController.selectedTab.value = 1,
                     child: const Text("Pending Orders",style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
-                  if(orderScreenController.selectedTab.value==1)Container(
-                    width: 100,
+                  if(orderScreenController.selectedTab.value==1)
+                  Container(
+                    // margin: EdgeInsets.symmetric(horizontal: 20),
+                    width: 95,
                     height: 3,
                     color: Get.theme.colorScheme.primary,
-                  )
+                  ),
                 ],
               ),
               Column(
@@ -68,11 +70,13 @@ class OrderPage extends StatelessWidget {
                     onPressed: () => orderScreenController.selectedTab.value = 2,
                     child: const Text("Placed Orders",style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
-                  if(orderScreenController.selectedTab.value==2)Container(
+                  if(orderScreenController.selectedTab.value==2)
+                  Container(
+                    // margin: EdgeInsets.symmetric(horizontal: 20),
                     width: 90,
                     height: 3,
                     color: Get.theme.colorScheme.primary,
-                  )
+                  ),
                 ],
               ),
             ],
@@ -85,7 +89,10 @@ class OrderPage extends StatelessWidget {
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                return OrderCard(order: order);
+                return GestureDetector(
+                  //TODO:order[arr] management
+                    onTap: ()=>Get.toNamed("/order_details_screen"),
+                    child: OrderCard(order: order));
               },
             ),
           ),
@@ -102,9 +109,22 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shadowColor: Get.theme.primaryColor,
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Get.theme.colorScheme.primary),
+      color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+        BoxShadow(
+          color: Get.theme.colorScheme.primary.withOpacity(.5),
+          spreadRadius: 2,
+          blurRadius: 2,
+          offset: Offset(0, 2)
+        )
+      ]
+      ),
+
+      padding: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
       margin: const EdgeInsets.all(10),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,7 +140,7 @@ class OrderCard extends StatelessWidget {
           ),
           const Spacer(),
           Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text('Rs ${order.price}', style: const TextStyle(fontWeight: FontWeight.bold)),
               Image.asset(
@@ -133,5 +153,17 @@ class OrderCard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+Alignment _getAlignment(int selectedTab) {
+  switch (selectedTab) {
+    case 0:
+      return Alignment.centerLeft; // Align to the first tab
+    case 1:
+      return Alignment.center; // Align to the second tab
+    case 2:
+      return Alignment.centerRight; // Align to the third tab
+    default:
+      return Alignment.centerLeft; // Default to the first tab
   }
 }

@@ -24,7 +24,6 @@ class VerifyEmailController extends GetxController {
   }
 
   checkEmailVerified() async {
-
     if (fa.currentUser != null) {
       await fa.currentUser!.reload();
 
@@ -34,7 +33,7 @@ class VerifyEmailController extends GetxController {
         Get.snackbar("Success", "Email Successfully Verified",
             snackPosition: SnackPosition.BOTTOM);
 
-        Get.until((route) => route.settings.name == "/login");
+        Get.until((route) => route.settings.name == "/login_signup_screen");
 
         timer?.cancel();
       }
@@ -45,7 +44,7 @@ class VerifyEmailController extends GetxController {
     try {
       timer?.cancel();
       fa.currentUser?.delete();
-      Get.offNamed("/login");
+      Get.offNamed("/login_signup_screen");
     } catch (e) {
       debugPrint('$e');
     }

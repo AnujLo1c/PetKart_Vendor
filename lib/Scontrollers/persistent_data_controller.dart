@@ -5,4 +5,7 @@ class PersistentDataController extends GetxController{
   updateName(String s){
     userName.value=s;
   }
+  getUserName(){
+    return userName;
+  }
 }

@@ -74,12 +74,12 @@ bool block=true;
   void handleBackNavigation() {
 if(check&& block){
   block=false;
-    Get.offNamed("/home");
+    Get.offNamed("/bottom_nav");
 print("true wala");
 }
 else if(!check && block){
   block=false;
-    Get.offNamed("/home");
+    Get.offNamed("/bottom_nav");
 print("false wala");
 }
   }

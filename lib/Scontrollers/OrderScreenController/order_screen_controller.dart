@@ -12,6 +12,13 @@ class OrderScreenController extends GetxController {
       deliveryStatus: 'Placed',
       imageUrl: 'assets/img/cat.png', // update with your assets path
       price: 3000,
+    ),OrderModel(
+      id: '#202110242004',
+      date: '2 Aug 2024 04:25 PM',
+      customerName: 'Anuj Lowanshi',
+      deliveryStatus: 'Placed',
+      imageUrl: 'assets/img/cat.png', // update with your assets path
+      price: 3000,
     ),
     // Add more orders as needed
   ].obs;

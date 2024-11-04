@@ -24,7 +24,7 @@ class BottomNav extends StatelessWidget {
         ),
         actions: [
           Obx(() {
-            return bottomNavController.selectedIndex.value == 0
+            return bottomNavController.selectedIndex.value != 4
                 ? IconButton(
               onPressed: () {
                 Get.toNamed("/noti_screen");

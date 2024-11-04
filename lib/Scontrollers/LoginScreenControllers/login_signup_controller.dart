@@ -2,14 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pet_kart/Firebase/FirebaseAuth/google_sign_in.dart';
-import 'package:pet_kart/SControllers/persistent_data_controller.dart';
+
 
 import '../../Firebase/FirebaseAuth/email_pass_login.dart';
+import '../../Firebase/FirebaseAuth/google_sign_in.dart';
 import '../../Firebase/FirebaseFirestore/firestore_firebase.dart';
-import '../../Firebase/FirebaseStorage/cloud_storage.dart';
+
 import '../../Models/customer.dart';
 import '../../MyWidgets/snackbarAL.dart';
+import '../persistent_data_controller.dart';
 
 class LoginSignupController extends GetxController {
 
@@ -23,6 +24,7 @@ void toggleMove(){
 }
 
 }
+
 class SignInController extends GetxController {
   var isObscure = true.obs;
   final emailController = TextEditingController();
@@ -43,7 +45,7 @@ class SignInController extends GetxController {
       if (await EmailPassLoginAl().loginInAL(email, password)) {
         storeUserName(email);
 
-        Get.toNamed("/home");
+        Get.toNamed("/bottom_nav");
       } else {
         showErrorSnackbar("login Failed");
       }
@@ -56,12 +58,12 @@ googleLogin() async {
     showErrorSnackbar("Some Error");
   }
   else if(uc.additionalUserInfo!.isNewUser){
-  Customer user=Customer(customerName: "xyz", email: uc!.user!.email??"", phoneNo: "XXXXXXXXXX");
+  Customer user=Customer(customerName: "xyz", email: uc.user!.email??"", phoneNo: "XXXXXXXXXX", profileUrl: '');
   FirestoreFirebaseAL().uploadUserDataAL(user);
-    Get.toNamed("/googlesignup");
+    Get.toNamed("/signup_google_screen");
   }else{
     storeUserName(uc.user?.email??"");
-    Get.toNamed("/home");
+    Get.toNamed("/bottom_nav");
   }
 }
   @override
@@ -74,7 +76,7 @@ googleLogin() async {
 
   Future<void> storeUserName(String email) async {
     persistentDataController.userName.value = await FirebaseFirestore.instance
-        .collection("users")
+        .collection("vendorusers")
         .doc(email)
         .get()
         .then((value) {
@@ -130,7 +132,7 @@ class SignUpController extends GetxController {
             FirestoreFirebaseAL().deleteUserDataAl(emailController.text);
             print("user failed to upload firebasefirestore");
           }
-        // }
+
       } else {
 
         print("user failed to upload signup firebase auth");
