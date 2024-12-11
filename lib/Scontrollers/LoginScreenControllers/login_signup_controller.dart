@@ -38,17 +38,53 @@ class SignInController extends GetxController {
     emailController.clear();
     passwordController.clear();
   }
+
   loginUser() async {
     if (formKeylogin.currentState!.validate()) {
       final email = emailController.text.trim();
       final password = passwordController.text.trim();
       if (await EmailPassLoginAl().loginInAL(email, password)) {
         storeUserName(email);
-
-        Get.toNamed("/bottom_nav");
+        if(await EmailPassLoginAl().isEmailVerified()){
+        int check=await checkVerifiedStatus();
+        if(check==0){
+Get.toNamed("/vendor_onboarding_details_screen");
+        }
+        else if(check==1){
+          Get.toNamed('/vendor_approval_screen');
+        }
+else if(check==2){
+        Get.toNamed("/bottom_nav");}
+        }
+        
+        else{
+          Get.toNamed('/emailverify');
+        }
       } else {
         showErrorSnackbar("login Failed");
       }
+    }
+  }
+  Future<int> checkVerifiedStatus() async {
+    try {
+
+      DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+          .collection('vendorusers')
+          .doc(emailController.text.trim())
+          .get();
+
+      if (docSnapshot.exists) {
+        var data = docSnapshot.data() as Map<String, dynamic>;
+        if (data.containsKey("verified")) {
+          // Return 2 if "verified" is true, else return 1
+          return data["verified"] == true ? 2 : 1;
+        }
+      }
+
+      return 0;
+    } catch (e) {
+      print("Error checking 'verified' status: $e");
+      return 0;
     }
   }
 googleLogin() async {

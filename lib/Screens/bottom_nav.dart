@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:petkart_vendor/Scontrollers/bottom_nav_controller.dart';
 
@@ -22,6 +23,7 @@ class BottomNav extends StatelessWidget {
             ),
           ),
         ),
+        automaticallyImplyLeading: false,
         actions: [
           Obx(() {
             return bottomNavController.selectedIndex.value != 4

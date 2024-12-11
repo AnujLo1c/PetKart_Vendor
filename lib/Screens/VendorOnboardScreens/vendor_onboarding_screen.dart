@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'dart:io';
 
 import '../../Scontrollers/VendorOnboardController/vendor_onboarding_controller.dart';
@@ -30,15 +30,15 @@ class VendorOnboardingDetails extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               buildTextField('Business Name', controller.businessNameController, false),
-              Gap(8),
-              buildTextField('Description', controller.descriptionController, false), // Changed here
-              Gap(8),
+              const Gap(8),
+              buildTextField('Description', controller.descriptionController, true), // Changed here
+              const Gap(8),
               buildDropdown('State', controller.selectedState, controller.states),
-              Gap(8),
+              const Gap(8),
               buildDropdown('City', controller.selectedCity, controller.cities),
-              Gap(8),
+              const Gap(8),
               buildTextField('Address', controller.addressController, false),
-              Gap(8),
+              const Gap(8),
               buildTextField('Postal Code', controller.postalCodeController, false),
               const SizedBox(height: 10),
 
@@ -49,15 +49,15 @@ class VendorOnboardingDetails extends StatelessWidget {
               buildImagePicker(controller),
               const SizedBox(height: 10),
               // buildTextField('Upload File', controller.certificateController, false, readOnly: true),
-              Gap(8),
+              const Gap(8),
               // buildTextField('Certificate', controller.certificateController, false),
               buildTermsAndPolicyCheckbox(controller),
               const SizedBox(height: 10),
               buildSubmitButton('Submit', () async {
                 if (controller.termsAccepted.value) {
                   if(await controller.uploadData()){
-                  Get.snackbar('Certificate Submitted', 'Data uploaded successfully!');
-                    Get.toNamed("vendor_approval_screen");
+                  Get.snackbar('Certificate Submitted', 'Data uploaded successfully!',backgroundColor: Get.theme.colorScheme.primary);
+                    Get.offNamed("/vendor_approval_screen");
                   }
                   else{
                   Get.snackbar('Failed', 'Data not uploaded!');
@@ -81,6 +81,7 @@ class VendorOnboardingDetails extends StatelessWidget {
     return TextField(
       controller: controller,
       readOnly: readOnly,
+      maxLines: null,
       decoration: InputDecoration(
         labelText: labelText,
         filled: false,
@@ -154,7 +155,7 @@ class VendorOnboardingDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Gap(5),
+        const Gap(5),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -173,19 +174,21 @@ class VendorOnboardingDetails extends StatelessWidget {
                   print("Upload limit reached.");
                 }
               },
-               child: Text("Add Image",style: TextStyle(fontSize: 14),),
+               child: const Text("Add Image",style: TextStyle(fontSize: 14),),
             ),
           ],
         ),
         const Gap(12),
         Obx(() => SizedBox(
-          height: 200, // Fixed height for grid view
+          height: 80, // Fixed height for grid view
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // Number of images per row
+              crossAxisCount: 4, // Number of images per row
               crossAxisSpacing: 16.0,
               mainAxisSpacing: 8.0, // Adjust main axis spacing
             ),
+
+            physics: NeverScrollableScrollPhysics(),
             itemCount: controller.selectedImages.length,
             itemBuilder: (context, index) {
               final image = controller.selectedImages[index];
@@ -208,7 +211,7 @@ class VendorOnboardingDetails extends StatelessWidget {
                       },
                       style: IconButton.styleFrom(
                         backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(4), // Add padding around icon
+                        padding: const EdgeInsets.all(4), // Add padding around icon
                       ),
                     ),
                   ),

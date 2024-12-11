@@ -46,18 +46,6 @@ class SingupScreengoogle extends StatelessWidget {
     );
   }
 
-  // Widget _buildProfileImage(BuildContext context, SignUpControllerGoogle controller) {
-  //   return GestureDetector(
-  //     onTap: () => _showImageSourceActionSheet(context, controller),
-  //     child: Obx(() => CircleAvatar(
-  //       radius: 50,
-  //       backgroundColor: Colors.grey[300],
-  //       backgroundImage: controller.image.value != null ? FileImage(controller.image.value!) : null,
-  //       child: controller.image.value == null ? const Icon(Icons.add_a_photo, size: 50) : null,
-  //     )),
-  //   );
-  // }
-
   Widget _buildUsernameField(SignUpControllerGoogle controller) {
   Color primary=Get.theme.colorScheme.primary;
     return TextFormField(

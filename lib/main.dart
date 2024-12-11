@@ -4,12 +4,14 @@ import 'package:get/get.dart';
 import 'package:petkart_vendor/Scontrollers/LoginScreenControllers/sign_up_controller_google.dart';
 import 'package:petkart_vendor/Scontrollers/ProductScreenController/all_products_controller.dart';
 import 'package:petkart_vendor/Scontrollers/ProfileController/settings_screen_controller.dart';
+// import 'package:petkart_vendor/Scontrollers/splash_screen.dart';
 import 'package:petkart_vendor/Scontrollers/theme_controller.dart';
 import 'package:petkart_vendor/Screens/DashboardScreen/dashboard_all_report_screen.dart';
 import 'package:petkart_vendor/Screens/DashboardScreen/dashboard_page.dart';
 import 'package:petkart_vendor/Screens/DashboardScreen/notification_screen.dart';
 import 'package:petkart_vendor/Screens/EarningScreen/payment_history_screen.dart';
 import 'package:petkart_vendor/Screens/LoginScreen/email_verification_screen.dart';
+import 'package:petkart_vendor/Screens/LoginScreen/forgetPassword_screen.dart';
 import 'package:petkart_vendor/Screens/LoginScreen/login_signup_screen.dart';
 import 'package:petkart_vendor/Screens/OrderScreen/order_detail_screen.dart';
 import 'package:petkart_vendor/Screens/OrderScreen/track_order_screen.dart';
@@ -21,6 +23,9 @@ import 'package:petkart_vendor/Screens/bottom_nav.dart';
 import 'Firebase/firebase_options.dart';
 // import 'Screens/LoginScreen/login_screen.dart';
 // import 'Screens/LoginScreen/signUp_screen.dart';
+import 'Screens/ProductScreen/add_pet_screen.dart';
+import 'Screens/ProductScreen/all_pet_screen.dart';
+import 'Screens/splash_screen.dart';
 import 'Screens/LoginScreen/singUp_screenGoogle.dart';
 import 'Screens/ProductScreen/add_product_screen.dart';
 import 'Screens/ProductScreen/all_products_screen.dart';
@@ -49,13 +54,10 @@ class MyApp extends StatelessWidget {
       themeMode: themeController.themeMode.value,
       getPages: [
 
-        //Login
-        // GetPage(name: "/login", page: () => const LoginScreen()),
-        // GetPage(name: "/signup", page: () => const SignupScreen()),
-        // GetPage(name: "/login_home", page: () => const SignupScreen()),
         GetPage(name: "/login_signup_screen", page: () => const LoginSignupScreen()),
         GetPage(name: "/signup_google_screen", page: () => const SingupScreengoogle()),
         GetPage(name: "/emailverify", page: () => const EmailVerificationScreen()),
+        GetPage(name: "/forgetpass", page: () => const ForgetpasswordScreen()),
 
 //bottom-nav /home
         GetPage(name: "/bottom_nav", page: () => const BottomNav()),
@@ -70,7 +72,9 @@ class MyApp extends StatelessWidget {
 
         //product
         GetPage(name: "/all_product_screen", page: () => const AllProductScreen()),
+        GetPage(name: "/all_pet_screen", page: () => const AllPetScreen()),
         GetPage(name: "/add_product_screen", page: () => const AddProductScreen()),
+        GetPage(name: "/add_pet_screen", page: () => AddPetScreen()),
 
         //order-section
         GetPage(name: "/order_details_screen", page: () => const OrderDetailScreen()),
@@ -84,10 +88,11 @@ class MyApp extends StatelessWidget {
         GetPage(name: "/update_profile_screen", page: () => const ProfileDetailsUpdateScreen()),
         GetPage(name: "/profile_setting_screen", page: () => const SettingsScreen()),
         GetPage(name: "/profile_change_password_screen", page: () => const ProfileChangePasswordScreen()),
+        GetPage(name: "/splash", page: () => const SplashScreen()),
 
       ],
-      // initialRoute: "/login_signup_screen",
-      initialRoute: "/vendor_onboarding_details_screen",
+      // initialRoute: "/add_pet_screen",
+      initialRoute: "/splash",
 
       unknownRoute: GetPage(name: "/login", page: () => const LoginSignupScreen()),
     );

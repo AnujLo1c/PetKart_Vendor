@@ -54,6 +54,8 @@ dependencies:
   intl: ^0.19.0
   fl_chart: ^0.69.0
   url_launcher: ^6.3.1
+  open_mail_app: ^0.4.5
+  image_cropper: ^8.0.2
 
 flutter_native_splash:
   android: true
@@ -99,6 +101,7 @@ flutter:
     - assets/splash.png
     - assets/img/
     - assets/rive/
+    - assets/lotti/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

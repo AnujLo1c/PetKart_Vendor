@@ -1,7 +1,7 @@
 class IncomeModel {
   final List<Map<String, dynamic>> incomeData;
 
-  // Main Constructor with default values set to 0.0
+  // Main Constructor with default values
   IncomeModel({
     double allCurrentGrossSales = 0.0,
     double allPreviousGrossSales = 0.0,
@@ -82,9 +82,7 @@ class IncomeModel {
     },
   ];
 
-
-
-  // Named Constructor to initialize from a map
+  // Named Constructor to initialize from a provided data list
   IncomeModel.fromData({required this.incomeData});
 
   // Factory constructor to create an instance from a Map
@@ -102,16 +100,18 @@ class IncomeModel {
   }
 
   // Method to update data in the incomeData list
-  void updateIncomeData(String period, String field, double value) {
+  void updateIncomeData(String period, Map<String, double> updates) {
     for (var map in incomeData) {
       if (map['name'] == period) {
-        map[field] = value;
+        updates.forEach((key, value) {
+          map[key] = (map[key] ?? 0.0) + value; // Increment the value
+        });
         break;
       }
     }
   }
 
-  // Method to retrieve data from the incomeData list
+  // Method to retrieve a specific field's data from the incomeData list
   double getIncomeData(String period, String field) {
     for (var map in incomeData) {
       if (map['name'] == period) {
@@ -119,5 +119,23 @@ class IncomeModel {
       }
     }
     return 0.0;
+  }
+
+  // Reset specific period data
+  void resetIncomeData(String period) {
+    for (var map in incomeData) {
+      if (map['name'] == period) {
+        map['previousGrossSales'] = map['currentGrossSales'] ?? 0.0;
+        map['previousEarnings'] = map['currentEarnings'] ?? 0.0;
+        map['previousProductSales'] = map['currentProductSales'] ?? 0.0;
+        map['previousTotalSales'] = map['currentTotalSales'] ?? 0.0;
+
+        map['currentGrossSales'] = 0.0;
+        map['currentEarnings'] = 0.0;
+        map['currentProductSales'] = 0.0;
+        map['currentTotalSales'] = 0.0;
+        break;
+      }
+    }
   }
 }

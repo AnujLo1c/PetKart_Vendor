@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../Models/tile_models.dart';
-import '../../Scontrollers/ProductScreenController/all_products_controller.dart';
 
-class AllProductScreen extends StatelessWidget {
-  const AllProductScreen({super.key});
+import '../../Scontrollers/ProductScreenController/all_pet_controller.dart';
+
+
+class AllPetScreen extends StatelessWidget {
+  const AllPetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final AllProductController controller = Get.put(AllProductController());
+    final AllPetController controller = Get.put(AllPetController());
     Color primary = Get.theme.colorScheme.primary;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primary,
-        title: const Text('All Product List'),
+        title: const Text('All Pet List'),
         actions: [
           IconButton(
             icon: const Icon(Icons.filter_list),
@@ -28,19 +29,19 @@ class AllProductScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            _buildSearchBar(controller), // Search bar with a search button
+            _buildSearchBar(controller),
             Expanded(
               child: Obx(() {
-                final products = controller.filteredProducts;
+                final pets = controller.filteredPets;
 
-                if (products.isEmpty) {
-                  return const Center(child: Text('No products found.'));
+                if (pets.isEmpty) {
+                  return const Center(child: Text('No pets found.'));
                 }
 
                 return ListView.builder(
-                  itemCount: products.length,
+                  itemCount: pets.length,
                   itemBuilder: (context, index) {
-                    return _buildProductTile(context, controller, index, products[index]);
+                    return _buildPetTile(context, controller, index, pets[index]);
                   },
                 );
               }),
@@ -51,8 +52,7 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Build the search bar with a button to trigger search
-  Widget _buildSearchBar(AllProductController controller) {
+  Widget _buildSearchBar(AllPetController controller) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: Row(
@@ -71,7 +71,7 @@ class AllProductScreen extends StatelessWidget {
           const SizedBox(width: 10),
           ElevatedButton(
             onPressed: () {
-              controller.applyFilters(); // Trigger search when button is pressed
+              controller.applyFilters();
             },
             child: const Text('Search'),
           ),
@@ -80,8 +80,7 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Function to show the filter dialog
-  void _showFilterDialog(BuildContext context, AllProductController controller) {
+  void _showFilterDialog(BuildContext context, AllPetController controller) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -92,7 +91,7 @@ class AllProductScreen extends StatelessWidget {
               children: [
                 _buildSearchField(controller),
                 _buildCategoryDropdown(controller),
-                _buildPriceSlider(controller),
+                _buildAgeSlider(controller),
                 _buildDatePicker(controller),
               ],
             ),
@@ -107,12 +106,7 @@ class AllProductScreen extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
-                controller.searchQuery.value = '';
-                controller.categoryFilter.value = '';
-                controller.priceFilter.value = 0.0;
-                controller.startDateFilter.value = '';
-                controller.endDateFilter.value = '';
-                controller.applyFilters();
+                controller.clearFilters();
                 Navigator.of(context).pop();
               },
               child: const Text('Clear Filters'),
@@ -123,8 +117,7 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Search field for filtering by name
-  Widget _buildSearchField(AllProductController controller) {
+  Widget _buildSearchField(AllPetController controller) {
     return TextField(
       onChanged: (value) {
         controller.searchQuery.value = value;
@@ -137,15 +130,14 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Category dropdown for filtering by category
-  Widget _buildCategoryDropdown(AllProductController controller) {
+  Widget _buildCategoryDropdown(AllPetController controller) {
     return DropdownButton<String>(
-      hint: const Text("Select Category"),
-      value: controller.categoryFilter.value.isEmpty ? null : controller.categoryFilter.value,
+      hint: const Text("Select Type"),
+      value: controller.typeFilter.value.isEmpty ? null : controller.typeFilter.value,
       onChanged: (newValue) {
-        controller.categoryFilter.value = newValue ?? '';
+        controller.typeFilter.value = newValue ?? '';
       },
-      items: <String>['', 'Food', 'Toys', 'Accessories', 'Other']
+      items: <String>['', 'Dog', 'Cat', 'Bird', 'Other']
           .map<DropdownMenuItem<String>>((String value) {
         return DropdownMenuItem<String>(
           value: value,
@@ -155,28 +147,26 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Price slider for filtering by price
-  Widget _buildPriceSlider(AllProductController controller) {
+  Widget _buildAgeSlider(AllPetController controller) {
     return Row(
       children: [
-        const Text('Max Price: ₹'),
+        const Text('Max Age: '),
         Expanded(
           child: Slider(
             min: 0,
-            max: 5000,
-            value: controller.priceFilter.value,
+            max: 20,
+            value: controller.ageFilter.value,
             onChanged: (value) {
-              controller.priceFilter.value = value;
+              controller.ageFilter.value = value;
             },
           ),
         ),
-        Text('₹${controller.priceFilter.value.toStringAsFixed(2)}'),
+        Text('${controller.ageFilter.value.toStringAsFixed(0)} years'),
       ],
     );
   }
 
-  // Date picker for filtering by date range
-  Widget _buildDatePicker(AllProductController controller) {
+  Widget _buildDatePicker(AllPetController controller) {
     return Row(
       children: [
         IconButton(
@@ -201,8 +191,7 @@ class AllProductScreen extends StatelessWidget {
     );
   }
 
-  // Display the product tile in the list
-  Widget _buildProductTile(BuildContext context, AllProductController controller, int index, Product product) {
+  Widget _buildPetTile(BuildContext context, AllPetController controller, int index, Pet pet) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8.0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
@@ -213,12 +202,12 @@ class AllProductScreen extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Image.network(
-                product.img,
+                pet.img,
                 errorBuilder: (context, error, stackTrace) {
                   return const Icon(Icons.broken_image, size: 60);
                 },
                 width: 80,
-                height: 80,
+                height: 90,
                 fit: BoxFit.cover,
               ),
             ),
@@ -227,10 +216,11 @@ class AllProductScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Name: ${product.name}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                  Text('Category: ${product.category}'),
-                  Text('Price: ₹${product.price.toStringAsFixed(2)}'),
-                  Text('Publish Date: ${product.publishDate}'),
+                  Text('Name: ${pet.name}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                  Text('Gender: ${pet.type}'),
+                  Text('Age: ${pet.age}'),
+                  Text('Publish: ${pet.publish}'),
+                  Text('Posted On: ${pet.postDate}'),
                 ],
               ),
             ),

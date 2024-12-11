@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:petkart_vendor/Firebase/FirebaseFirestore/firestore_firebase.dart';
 import '../../Firebase/FirebaseAuth/email_pass_login.dart';
 import '../../Scontrollers/LoginScreenControllers/verify_email_controller.dart';
 
@@ -13,7 +14,10 @@ class EmailVerificationScreen extends StatelessWidget {
     final VerifyEmailController verifyEmailController=Get.put(VerifyEmailController());
     return PopScope(
       canPop: true,
-      onPopInvokedWithResult: (didPop, result) => EmailPassLoginAl().signOut(),
+      onPopInvokedWithResult: (didPop, result) {EmailPassLoginAl().signOut();
+EmailPassLoginAl().deleteUser();
+FirestoreFirebaseAL().deleteUserDataAl(EmailPassLoginAl().getEmail());
+        },
       child: SafeArea(
         child: Scaffold(
           body: SingleChildScrollView(

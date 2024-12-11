@@ -15,7 +15,7 @@ class BottomNavController extends GetxController {
     const OrderPage(),
     const ProductPage(),
     const EarningPage(),
-    const ProfilePage(),
+    ProfilePage(),
   ];
   PageController pageController = PageController(initialPage: 0);
 

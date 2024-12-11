@@ -147,7 +147,26 @@ class EmailPassLoginAl {
       style: const TextStyle(fontSize: 18.0),
     )));
   }
+  Future<bool> isEmailVerified() async {
+    try {
+      // Get the current user
+      User? user = FirebaseAuth.instance.currentUser;
 
+      // Refresh the user's information
+      await user?.reload();
+      user = FirebaseAuth.instance.currentUser;
+
+      // Check if the email is verified
+      if (user != null && user.emailVerified) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print("Error checking email verification status: $e");
+      return false;
+    }
+  }
   validateEmailAL(String email) {
     if (EmailValidator.validate(email)) {
       if (email.endsWith("@gmail.com")) {

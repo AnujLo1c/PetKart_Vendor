@@ -84,18 +84,18 @@ class OrderPage extends StatelessWidget {
 
 
           // List of orders
-          Expanded(
-            child: ListView.builder(
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                final order = orders[index];
-                return GestureDetector(
-                  //TODO:order[arr] management
-                    onTap: ()=>Get.toNamed("/order_details_screen"),
-                    child: OrderCard(order: order));
-              },
-            ),
-          ),
+          // Expanded(
+          //   child: ListView.builder(
+          //     itemCount: orders.length,
+          //     itemBuilder: (context, index) {
+          //       final order = orders[index];
+          //       return GestureDetector(
+          //         //TODO:order[arr] management
+          //           onTap: ()=>Get.toNamed("/order_details_screen"),
+          //           child: OrderCard(order: order));
+          //     },
+          //   ),
+          // ),
         ],
       );
     });

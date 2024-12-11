@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:petkart_vendor/Firebase/FirebaseAuth/email_pass_login.dart';
-import 'package:petkart_vendor/Firebase/FirebaseFirestore/firestore_firebase.dart';
 
 import '../../Models/product_model.dart';
 
@@ -26,7 +25,7 @@ class AddProductController extends GetxController {
   var selectedCategory = 'Food'.obs;
   var selectedSubcategory = ''.obs;
 
-  List<String> categories = ['Food', 'Toys', 'Gears'];
+  List<String> categories = ['Food', 'Accessories'];
   var subcategories = <String>[].obs;
 
   // List to store the paths of selected images
@@ -111,14 +110,20 @@ class AddProductController extends GetxController {
     FirebaseFirestore firestore=FirebaseFirestore.instance;
     try {
       // Generate a unique document ID for the product
-      String docId = firestore.collection('products').doc().id;
+      CollectionReference cref=firestore.collection('products').doc(selectedCategory.value).collection(selectedCategory.value);
+      String docId = cref.doc().id;
 
       // Upload primary image and additional images to Firebase Storage
       String primaryImageUrl = await _uploadFile(product.primaryImage, 'products/$docId/primary');
       List<String> imageUrls = await Future.wait(
-        product.images.map((file) => _uploadFile(file, 'products/$docId/images/${file.path.split('/').last}')),
+        selectedImages.map((imagePath) {
+          File file = File(imagePath); // Convert path to File
+          String fileName = file.path.split('/').last;
+          return _uploadFile(file, 'products/$docId/images/$fileName');
+        }),
       );
-
+print(imageUrls);
+print(product.images.length);
       // Convert product to Map and add uploaded image URLs
       Map<String, dynamic> productData = product.toMap();
       productData['primaryImageUrl'] = primaryImageUrl;
@@ -126,8 +131,8 @@ class AddProductController extends GetxController {
       productData['vendorId'] = vendorId;
 
       // Save product data to Firestore
-      await firestore.collection('products').doc(docId).set(productData);
-      await firestore.collection('products').doc(docId).update({'docId':docId});
+      await cref.doc(docId).set(productData);
+      await cref.doc(docId).update({'docId':docId},);
 
       // Update vendor's product list with the new product ID
       await firestore.collection('vendorusers').doc(vendorId).update({

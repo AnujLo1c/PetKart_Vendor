@@ -7,6 +7,7 @@ import 'package:petkart_vendor/Firebase/FirebaseAuth/email_pass_login.dart';
 import 'package:petkart_vendor/Scontrollers/DashboardScreenController/dashboard_page_controller.dart';
 
 import '../../Models/income_model.dart';
+import '../../MyWidgets/custom_fillers.dart';
 
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
@@ -44,7 +45,13 @@ print(dashboardPageController.incomeData);
                         .snapshots(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return CircularProgressIndicator();
+                        return const SizedBox(
+                          height: 10,
+                          width: 10,
+                          child: CircularProgressIndicator(),
+
+                        );
+
                       }
 
                       if (snapshot.hasError) {
@@ -52,16 +59,21 @@ print(dashboardPageController.incomeData);
                       }
 
                       if (!snapshot.hasData || !snapshot.data!.exists) {
-                        return Text("Document does not exist");
+                        return const Text("Document does not exist");
                       }
 
                       // Accessing the nested 'incomeData' field from the document
                       var incomeData = snapshot.data!.get('incomeData');
-
                       if (incomeData is List) {
-                        final data = incomeData[2]; // Assuming you want the third item
-                        // Replace 'imageURL' with the correct field name for the image
-                        dashboardPageController.incomeData = IncomeModel.fromMap(data);
+                        // Safely cast incomeData to List<Map<String, dynamic>>
+                        final List<Map<String, dynamic>> parsedIncomeData =
+                        incomeData.map((e) => Map<String, dynamic>.from(e)).toList();
+
+                        final data = parsedIncomeData[2]; // Assuming you want the third item
+                        print(parsedIncomeData);
+
+                        dashboardPageController.incomeData =
+                            IncomeModel.fromData(incomeData: parsedIncomeData);
                         return GridView(
                           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 2,
@@ -85,7 +97,7 @@ print(dashboardPageController.incomeData);
                           ],
                         );
                       } else {
-                        return Text("Invalid data format for incomeData");
+                        return const Text("Invalid data format for incomeData");
                       }
                     },
                   )
@@ -104,18 +116,52 @@ print(dashboardPageController.incomeData);
                       }, child: const Text("See All Orders"))
                 ],
               ),
-              const Gap(10),
-              SizedBox(
-                height: Get.height,
-                child: ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => Gap(10),
-                  itemBuilder: (BuildContext context, int index) {
-                    return orderTile();
-                  },
-                  itemCount: 5,
+              // const Gap(10),
+      StreamBuilder<List<Map<String, dynamic>>>(
+        stream: dashboardPageController.fetchPetOrders(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No Pet Orders Found'));
+          }
+
+          final petOrder = snapshot.data!;
+
+          return SizedBox(
+            height: Get.height,
+            child: Column(
+              children: [
+            orderTile(orderId: petOrder[0]['petId'],customerName: petOrder[0]['customerId'],imgUrl: petOrder[0]['imgUrl'],
+                      price: petOrder[0]['totalPrice'] ,status: petOrder[0]['orderStatus']
+                  ),
+                Gap(10),
+                orderTile(orderId: petOrder[1]['petId'],customerName: petOrder[1]['customerId'],imgUrl: petOrder[1]['imgUrl'],
+                    price: petOrder[1]['totalPrice'] ,status: petOrder[1]['orderStatus']
                 ),
-              )
+              ],
+            )
+            // ListView.separated(
+            //   physics: NeverScrollableScrollPhysics(),
+            //   itemCount: petOrders.length,
+            //   itemBuilder: (context, index) {
+            //     final petOrder = petOrders[index];
+            //
+            //     return orderTile(orderId: petOrder['petId'],customerName: petOrder['customerId'],imgUrl: petOrder['imgUrl'],
+            //         price: petOrder['totalPrice'] ,status: petOrder['orderStatus']
+            //     );
+            //
+            //   }, separatorBuilder: (BuildContext context, int index) =>const Gap(10),
+            // ),
+          );
+        },
+      )
             ],
           )),
     );
@@ -124,14 +170,16 @@ print(dashboardPageController.incomeData);
     if(prev==0)return '0%';
 double d=(((curr+prev)/prev)*100);
 
-    return d<=0?'O%':d.toStringAsFixed(1)+'%';
+    return d<=0?'O%':'${d.toStringAsFixed(1)}%';
   }
 
-  Widget orderTile() {
+  Widget orderTile({required String imgUrl, required String price,required String orderId,
+    required String customerName, required String status}) {
+    print(imgUrl);
     return Container(
       padding: const EdgeInsets.only(top: 5, right: 15, left: 15),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.red), // Red border as per the image
+        border: Border.all(color: Colors.red),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
@@ -141,42 +189,42 @@ double d=(((curr+prev)/prev)*100);
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               RichText(
-                text: const TextSpan(
-                  style: TextStyle(color: Colors.red, fontSize: 14),
+                text:  TextSpan(
+                  style: const TextStyle(color: Colors.red, fontSize: 14),
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: 'Order Id\n',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: '20110204-asdsadf\n',
-                      style: TextStyle(color: Colors.black),
+                      text: orderId,
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
               ),
               // const SizedBox(height: 4),
               RichText(
-                text: const TextSpan(
-                  style: TextStyle(color: Colors.black, fontSize: 14),
+                text:  TextSpan(
+                  style: const TextStyle(color: Colors.black, fontSize: 14),
                   children: [
-                    TextSpan(
+                    const TextSpan(
                       text: 'Customer Name\n',
                       style: TextStyle(
                           color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: 'Anuj Lowanshi\n',
-                      style: TextStyle(color: Colors.black),
+                      text:customerName +'\n',
+                      style: const TextStyle(color: Colors.black),
                     ),
-                    TextSpan(
+                    const TextSpan(
                       text: 'Status\n',
                       style: TextStyle(
                           color: Colors.red, fontWeight: FontWeight.bold),
                     ),
                     TextSpan(
-                      text: 'Purchased\n',
-                      style: TextStyle(color: Colors.black),
+                      text: status,
+                      style: const TextStyle(color: Colors.black),
                     ),
                   ],
                 ),
@@ -185,16 +233,17 @@ double d=(((curr+prev)/prev)*100);
           ),
           Column(
             children: [
-              Image.asset(
-                'assets/img/cat.png',
-                height: 90,
-                width: 90,
-                fit: BoxFit.cover,
-              ),
+              // Image.asset(
+              //   'assets/img/cat.png',
+              //   height: 90,
+              //   width: 90,
+              //   fit: BoxFit.cover,
+              // ),
+              handeledNetworkImage(imgUrl),
               const SizedBox(height: 5),
-              const Text(
-                'Rs 3000',
-                style: TextStyle(
+              Text(
+                price,
+                style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
                     color: Colors.black),
@@ -236,10 +285,10 @@ class StatCard extends StatelessWidget {
             Row(
               children: [
                 Icon(icon, size: 28, color: Get.theme.colorScheme.primary),
-                Spacer(),
+                const Spacer(),
                 Text(
                   growth,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors
                         .green, // Change this color based on growth value if needed
                     fontWeight: FontWeight.bold,
@@ -247,19 +296,19 @@ class StatCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               title,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.bold,
                 color: Colors.grey,
               ),
             ),
-            SizedBox(height: 6),
+            const SizedBox(height: 6),
             Text(
               amount,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
                 color: Colors.black,

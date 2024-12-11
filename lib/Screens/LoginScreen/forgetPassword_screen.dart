@@ -17,34 +17,31 @@ class ForgetpasswordScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: forgetPassController.formKey,
-          child: Column(
-            children: <Widget>[
-              const Gap(30),
-              TextFormField(
-                controller: forgetPassController.emailController,
-                decoration: const InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                    return null;
-                },
-              ),
-              const Gap(20),
-              ElevatedButton(
+        child: Column(
+          children: <Widget>[
+            const Gap(30),
+            TextFormField(
+              controller: forgetPassController.emailController,
+              decoration: const InputDecoration(labelText: 'Email'),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter your email';
+                }
+                  return null;
+              },
+            ),
+            const Gap(20),
+            ElevatedButton(
 
-                onPressed: () {
-                  forgetPassController.resetPass();
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: Size(Get.width-90, 60)
-                ),
-                child: const Text('Send Reset Email'),
+              onPressed: () {
+                forgetPassController.resetPass();
+              },
+              style: ElevatedButton.styleFrom(
+                minimumSize: Size(Get.width-90, 60)
               ),
-            ],
-          ),
+              child: const Text('Send Reset Email'),
+            ),
+          ],
         ),
       ),
     );

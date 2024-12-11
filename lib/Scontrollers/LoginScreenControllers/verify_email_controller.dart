@@ -33,8 +33,8 @@ class VerifyEmailController extends GetxController {
         Get.snackbar("Success", "Email Successfully Verified",
             snackPosition: SnackPosition.BOTTOM);
 
-        Get.until((route) => route.settings.name == "/login_signup_screen");
-
+        // Get.until((route) => route.settings.name == "/login_signup_screen");
+Get.offNamed('/vendor_onboarding_details_screen');
         timer?.cancel();
       }
     }

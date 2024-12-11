@@ -7,11 +7,10 @@ import '../../MyWidgets/snackbarAL.dart';
 
 
 class ForgetPassController extends GetxController{
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> formKey1 = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
 
   Future<void> resetPass() async {
-    if (formKey.currentState!.validate()) {
       final email = emailController.text.trim();
       if(await EmailPassLoginAl().resetPasswordAL(email)){
         showSuccessSnackbar("Reset email send.");
@@ -19,7 +18,7 @@ class ForgetPassController extends GetxController{
       else{
         showErrorSnackbar("Some Error");
       }
-    }
+
   }
 
 }
